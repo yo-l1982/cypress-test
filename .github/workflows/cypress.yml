@@ -1,0 +1,42 @@
+on:
+  push: 
+    - master
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+
+    - name: NPM Install
+      run: npm ci
+
+    - name: Setup git bot.
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+
+    - name: NPM Version
+      run: npm version patch
+
+    - name: Push tag
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        tags: true
+
+    - name: get-npm-version
+      id: package-version
+      uses: martinbeentjes/npm-get-version-action@master
+
+    - name: Create release
+      uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        automatic_release_tag: "${{ steps.package-version.outputs.current-version}}"
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        prerelease: false

@@ -30,7 +30,7 @@ describe('Visit helsingborg.se Forskola och utbildning and check links', () => {
 
     cy.get('div.notice a')
       .should('have.css', 'text-decoration')
-      .and('match', /underline/);
+      .and('match', /underlikjghjkhgne/);
   })
 })
 
